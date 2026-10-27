@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,100..900;1,100..900&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1 var(--delay, 0ms);
+
+  @keyframes cell-ripple {
+    0% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 0.4;
+    }
+  }
+}
+
+:root {
+  --font-sans: 'Urbanist', system-ui, -apple-system, sans-serif;
+}
+
+/* Base */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #fcfcfc;
+  color: #09090b;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbars */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #d4d4d8; }
+
+
+
+/* Dot loader static */
+.dot-loader {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.dot-loader span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #18181b;
+  opacity: 0.8;
+}
+
+.dot-loader.dark-dot-loader span {
+  background: #d4d4d8;
+}
+
+
+/* Sandpack overrides */
+.sp-wrapper {
+  border-radius: 0 !important;
+  border: none !important;
+  height: 100% !important;
+}
+
+.sp-layout {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  height: 100% !important;
+}
+
+.sp-preview {
+  height: 100% !important;
+}
+
+.sp-preview-iframe {
+  height: 100% !important;
+}
+
+.sp-code-editor {
+  height: 100% !important;
+}
+
+/* Marquee styles */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.masked-marquee {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.background-ripple-grid {
+  --ripple-cell-size: var(--ripple-base-cell-size);
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.background-ripple-atmosphere {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse at 25% 35%, rgb(255 255 255 / 5%), transparent 42%),
+    radial-gradient(ellipse at 75% 65%, rgb(255 255 255 / 4%), transparent 40%);
+  animation: ripple-atmosphere 18s ease-in-out infinite alternate;
+}
+
+.background-ripple-grid-cells {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--ripple-cols), var(--ripple-cell-size));
+  grid-template-rows: repeat(var(--ripple-rows), var(--ripple-cell-size));
+  width: max-content;
+  height: max-content;
+  pointer-events: none;
+}
+
+.background-ripple-cell {
+  position: relative;
+  width: var(--ripple-cell-size);
+  height: var(--ripple-cell-size);
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 8%);
+  background: rgb(255 255 255 / 2%);
+  overflow: hidden;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.background-ripple-cell:hover,
+.background-ripple-cell:focus-visible {
+  background: rgb(255 255 255 / 12%);
+  outline: 1px solid rgb(255 255 255 / 35%);
+  outline-offset: -2px;
+}
+
+.background-ripple-cell-wave {
+  position: absolute;
+  inset: 0;
+  background: rgb(255 255 255 / 22%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes ripple-atmosphere {
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(2%, 1%, 0) scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cell-ripple,
+  .background-ripple-atmosphere {
+    animation: none;
+  }
+}
