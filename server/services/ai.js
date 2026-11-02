@@ -142,21 +142,23 @@ export async function generateProject(prompt, callbacks){
         console.error(`[AI] Failed to generate ${pendingFiles.length} files after all retry rounds: ${failedPaths}`);
 
         if (pendingFiles.some((f) => f.path === "/App.js")){
-            const ext = file.path.split(".").pop()?.toLowerCase();
+            for (const file of pendingFiles) {
+                const ext = file.path.split(".").pop()?.toLowerCase();
 
-            if(ext === "css"){
-                files[file.path] = `/* ${file.description} — Generation failed, please retry */\n`
-            }else{
-                files[file.path] = "import React from 'react';\n\n" + 
-                `// ⚠️ This file could not be generated. Please retry.\n` +
-                `// Purpose: ${file.description}\n\n` + 
-                "export default function Placeholder() {\n" +
-                "  return (\n" +
-                    "    <div className='p-8 text-center text-zinc-400'>\n" +
-                    "      <p>⚠️ Component failed to generate. Please try again.</p>\n" +
-                    "    </div>\n" +
-                    "  );\n" +
-                    "}\n";
+                if(ext === "css"){
+                    files[file.path] = `/* ${file.description} — Generation failed, please retry */\n`
+                }else{
+                    files[file.path] = "import React from 'react';\n\n" +
+                    `// ⚠️ This file could not be generated. Please retry.\n` +
+                    `// Purpose: ${file.description}\n\n` +
+                    "export default function Placeholder() {\n" +
+                    "  return (\n" +
+                        "    <div className='p-8 text-center text-zinc-400'>\n" +
+                        "      <p>⚠️ Component failed to generate. Please try again.</p>\n" +
+                        "    </div>\n" +
+                        "  );\n" +
+                        "}\n";
+                }
             }
         }
 

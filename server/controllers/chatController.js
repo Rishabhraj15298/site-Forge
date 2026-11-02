@@ -1,6 +1,7 @@
 import { Project } from "../models/Project.js";
 import { reviseProject } from "../services/ai.js";
 import { applyOperations } from "../services/diff.js";
+import { getAIErrorDetails } from "../services/aiError.js";
 
 export function buildManifest(files){
     const manifest = [];
@@ -102,9 +103,10 @@ export async function chat(req, res){
         })
 
     } catch (err) {
-        console.error(`[AI Revision Error] ${err.message}`);
+        const details = getAIErrorDetails(err);
+        console.error("[AI Revision Error]", details);
         project.status = "completed";
          await project.save();
-         res.status(500).json({ error: err.message || "Failed to process revision request" });
+         res.status(500).json({ error: details.message || "Failed to process revision request" });
     }
 }

@@ -1,6 +1,7 @@
 import { Project } from "../models/Project.js";
 import crypto from "crypto";
 import { generateProject } from "../services/ai.js";
+import { getAIErrorDetails } from "../services/aiError.js";
 
 
 function hashContent(content){
@@ -126,14 +127,15 @@ async function runBackgroundGeneration(projectId, prompt){
             await project.save();
         }
     } catch (err) {
-        console.error(`[Background AI] Fatal generation error for project ${projectId}:`, err);
+        const details = getAIErrorDetails(err);
+        console.error(`[Background AI] Fatal generation error for project ${projectId}:`, details);
         await Project.findByIdAndUpdate(projectId, {
             status: "failed",
-            error: err.message,
+            error: details.message,
             $push: {
                 messages:{
                     role: "assistant",
-                    content: `❌ Generation failed: ${err.message}`,
+                    content: `❌ Generation failed: ${details.message}`,
                     timestamp: new Date(),
                 }
             }
@@ -309,4 +311,3 @@ export async function getPublicProject(req, res){
         version: project.version,
     })
 }
-
