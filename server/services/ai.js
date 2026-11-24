@@ -96,7 +96,7 @@ export async function generateProject(prompt, callbacks){
 
     for (let round = 0; round <= maxRetryRounds; round++) {
         if(pendingFiles.length === 0) break;
-
+        
         if(round > 0){
             console.log(
                 `[AI] Retry round ${round}/${maxRetryRounds} for ${pendingFiles.length} failed files: ${pendingFiles.map((f) => f.path).join(", ")}`,
@@ -206,6 +206,7 @@ export async function reviseProject(prompt, manifest, relevantFiles, recentMessa
         prompt: contextParts.join("\n"),
         maxRetries: 2
     })
+
 
     if(rawParsed && Array.isArray(rawParsed.operations)){
         rawParsed.operations = rawParsed.operations.map((op)=>{

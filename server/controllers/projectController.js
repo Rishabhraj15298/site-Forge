@@ -12,7 +12,8 @@ function hashContent(content){
 // Create a new project from an AI prompt.
 export async function createProject(req, res){
     const {prompt} = req.body;
-    if(!prompt || typeof prompt !== 'string'){
+    const trimmedPrompt = typeof prompt === "string" ? prompt.trim() : "";
+    if(!trimmedPrompt){
         res.status(400).json({ error: "prompt is required" });
         return;
     }
@@ -25,10 +26,10 @@ export async function createProject(req, res){
     // Create project in DB immediately with "pending" status
     const project = await Project.create({
         name: "Planning project...",
-        description: prompt,
+        description: trimmedPrompt,
         files: {},
         messages: [
-            {role: "user", content: prompt},
+            {role: "user", content: trimmedPrompt},
             {role: "assistant", content: 'Planning project structure...'},
         ],
         version: 0,
@@ -41,7 +42,7 @@ export async function createProject(req, res){
     })
 
     // Start background generation
-    runBackgroundGeneration(project._id.toString(), prompt).catch((err)=>{
+    runBackgroundGeneration(project._id.toString(), trimmedPrompt).catch((err)=>{
         console.error(`[Background AI] Fatal generation error for project ${project._id}:`, err)
     })
 

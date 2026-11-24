@@ -146,11 +146,12 @@ export function AppContextProvider({children}){
 
        const handleGenerate = useCallback(
         async (prompt) => {
-            if(!user) return;
+            const trimmedPrompt = typeof prompt === "string" ? prompt.trim() : "";
+            if(!trimmedPrompt || !user) return;
 
             setGeneratingProject(true);
             try {
-                const { data } = await api.post("/api/projects", { prompt });
+                const { data } = await api.post("/api/projects", { prompt: trimmedPrompt });
                 toast.success("AI Agent is planning structure...")
                 navigate(`/builder/${data._id}`);
             } catch (err) {
